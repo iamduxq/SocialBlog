@@ -34,7 +34,7 @@ public class PostsEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_post_category"))
-    private CategoryEntitty category;
+    private CategoryEntity category;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<CommentEntity> comments;

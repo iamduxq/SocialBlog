@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "catagories")
 @Getter @Setter
-public class CategoryEntitty extends BaseEntity {
+public class CategoryEntity extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
