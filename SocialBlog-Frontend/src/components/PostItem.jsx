@@ -43,7 +43,7 @@ export default function PostItem() {
   };
 
   return (
-    <div className="bg-white border rounded p-4 space-y-3">
+    <div className="p-4 space-y-3 bg-white border rounded">
       
       {/* Header bài viết */}
       <div className="flex items-center space-x-3">
@@ -66,7 +66,7 @@ export default function PostItem() {
       </div>
 
       {/* Action */}
-      <div className="flex border-t pt-2 text-sm">
+      <div className="flex pt-2 text-sm border-t">
         <button
           onClick={handleLike}
           className={`flex-1 py-2 ${
@@ -96,12 +96,12 @@ export default function PostItem() {
         <input
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
-          className="flex-1 border rounded px-3 py-1 text-sm"
+          className="flex-1 px-3 py-1 text-sm border rounded"
           placeholder="Viết bình luận..."
         />
         <button
           onClick={handleComment}
-          className="bg-blue-600 text-white px-3 rounded text-sm"
+          className="px-3 text-sm text-white bg-blue-600 rounded"
         >
           Gửi
         </button>

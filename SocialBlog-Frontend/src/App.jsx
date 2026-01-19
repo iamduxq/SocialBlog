@@ -7,6 +7,7 @@ import Messages from "./pages/Message/Messages";
 import Notifications from "./pages/Notifications/Notifications";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
+import "./App.css";
 
 export default function App() {
   return (
@@ -19,6 +20,8 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/messages" element={<MainLayout><Messages /></MainLayout>} />
         <Route path="/notifications" element={<MainLayout><Notifications /></MainLayout>} />
+        <Route path="/login" element={<MainLayout><Login /></MainLayout>} />
+        <Route path="/register" element={<MainLayout><Register /></MainLayout>} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,17 +1,87 @@
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { FcGoogle } from 'react-icons/fc';
+import { useState } from "react";
 
-export default function Login() {
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      //   const res = await axios.post("http://localhost:8888/api/auth/login", {
+      //   username, password,
+      // });
+
+
+      axios.post("http://localhost:8888/api/auth/login",
+        {username, password},
+        {withCredentials: true}
+      );
+      
+      alert("Đăng nhập thành công!");
+      window.location.href = "/";
+    } catch (err) {
+      setError("Tài khoản hoặc mật khẩu không chính xác!");
+    }
+  }
+
   return (
-    <div className="max-w-md mx-auto bg-white border p-6 rounded">
-      <h2 className="text-xl font-bold mb-4">Đăng nhập</h2>
-      <input className="border w-full p-2 mb-3" placeholder="Username" />
-      <input type="password" className="border w-full p-2 mb-3" placeholder="Password" />
-      <button className="w-full bg-blue-600 text-white py-2 rounded">
-        Đăng nhập
-      </button>
-      <p className="text-sm mt-3">
-        Chưa có tài khoản? <Link to="/register" className="text-blue-600">Đăng ký</Link>
-      </p>
-    </div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col w-full max-w-md p-6 bg-white border rounded"
+        >
+          <h2 className="mb-4 text-xl font-bold text-center">
+            Đăng nhập
+          </h2>
+
+          <input
+            className="w-full p-2 mb-3 border rounded"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            className="w-full p-2 mb-2 border rounded"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <Link to="#" className="mb-4 text-sm text-right text-blue-600 underline">
+            Forgot Password?
+          </Link>
+
+          <button type="submit" className="w-full py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+            Đăng nhập
+          </button>
+
+          <p className="p-4 text-center">=============== Or ===============</p>
+
+          <button
+            type="submit"
+            className="flex items-center justify-center w-full gap-2 py-2 border-2 border-blue-500 rounded"
+          >
+            <FcGoogle size={24} />
+            <span>Đăng nhập bằng Google</span>
+          </button>
+
+          <p className="mt-3 text-sm text-center">
+            Chưa có tài khoản?{" "}
+            <Link to="/register" className="text-blue-600">
+              Đăng ký
+            </Link>
+          </p>
+        </form>
+      </div>
   );
 }
+export default Login;
