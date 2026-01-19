@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TagMapper {
-    public static TagDTO toDTO(TagEntity entity) {
+    public TagDTO toDTO(TagEntity entity) {
         if (entity == null) return null;
 
         TagDTO dto = new TagDTO();

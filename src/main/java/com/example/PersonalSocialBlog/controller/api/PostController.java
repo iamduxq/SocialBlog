@@ -1,6 +1,7 @@
 package com.example.PersonalSocialBlog.controller.api;
 
-import com.example.PersonalSocialBlog.component.ServiceHelper;
+import com.example.PersonalSocialBlog.dto.PostDTO;
+import com.example.PersonalSocialBlog.service.IPostsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +15,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class PostController {
-    private final ServiceHelper serviceHelper;
+    private final IPostsService postsService;
 
-//    @GetMapping("/")
-//    public List
+    @GetMapping("/find")
+    public List<PostDTO> getAllPost() {
+        return postsService.findAll();
+    }
 }

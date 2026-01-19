@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class UserDTO extends AbstractDTO<UserDTO> {
     private String username;
+    private String password;
     private String email;
     private String fullName;
     private String avatar;

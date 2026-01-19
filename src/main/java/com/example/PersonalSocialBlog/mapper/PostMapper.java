@@ -3,13 +3,22 @@ package com.example.PersonalSocialBlog.mapper;
 import com.example.PersonalSocialBlog.dto.PostDTO;
 import com.example.PersonalSocialBlog.dto.PostDetailDTO;
 import com.example.PersonalSocialBlog.entity.PostsEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class PostMapper {
-    public static PostDTO toDTO(PostsEntity entity) {
+
+    private final UserMapper userMapper;
+    private final CategoryMapper categoryMapper;
+    private final CommentMapper commentMapper;
+    private final TagMapper tagMapper;
+
+    public PostDTO toDTO(PostsEntity entity) {
         if (entity == null) return null;
 
         PostDTO dto = new PostDTO();
@@ -20,8 +29,8 @@ public class PostMapper {
         dto.setViewCount(entity.getViewCount());
         dto.setVisibility(entity.getVisibility());
         dto.setCreatedDate(entity.getCreatedDate());
-        dto.setUser(UserMapper.toDTO(entity.getUser()));
-        dto.setCategory(CategoryMapper.toDTO(entity.getCategory()));
+        dto.setUser(userMapper.toDTO(entity.getUser()));
+        dto.setCategory(categoryMapper.toDTO(entity.getCategory()));
 
         dto.setCommentCount(
                 entity.getComments() == null ? 0 : entity.getComments().size()
@@ -30,13 +39,17 @@ public class PostMapper {
                 entity.getTags() == null ? null :
                         entity.getTags()
                                 .stream()
-                                .map(TagMapper::toDTO)
+                                .map(tagMapper::toDTO)
                                 .collect(Collectors.toList())
         );
         return dto;
     }
 
-    public static PostDetailDTO toDetailDTO(PostsEntity entity) {
+    public List<PostDTO> toDTOList(List<PostsEntity> entity) {
+        return entity.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public PostDetailDTO toDetailDTO(PostsEntity entity) {
         if (entity == null) return null;
 
         PostDetailDTO dto = new PostDetailDTO();
@@ -48,21 +61,21 @@ public class PostMapper {
         dto.setViewCount(entity.getViewCount());
         dto.setVisibility(entity.getVisibility());
         dto.setCreatedDate(entity.getCreatedDate());
-        dto.setUser(UserMapper.toDTO(entity.getUser()));
-        dto.setCategory(CategoryMapper.toDTO(entity.getCategory()));
+        dto.setUser(userMapper.toDTO(entity.getUser()));
+        dto.setCategory(categoryMapper.toDTO(entity.getCategory()));
 
         dto.setTags(
                 entity.getTags() == null ? null :
                         entity.getTags()
                                 .stream()
-                                .map(TagMapper::toDTO)
+                                .map(tagMapper::toDTO)
                                 .collect(Collectors.toList())
         );
         dto.setComments(
                 entity.getComments() == null ? null :
                         entity.getComments()
                                 .stream()
-                                .map(CommentMapper::toDTO)
+                                .map(commentMapper::toDTO)
                                 .collect(Collectors.toList())
         );
         return dto;
