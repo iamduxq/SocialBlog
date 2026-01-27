@@ -11,24 +11,21 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
-      //   const res = await axios.post("http://localhost:8888/api/auth/login", {
-      //   username, password,
-      // });
-
-
       axios.post("http://localhost:8888/api/auth/login",
         {username, password},
         {withCredentials: true}
       );
-      
       alert("Đăng nhập thành công!");
       window.location.href = "/";
     } catch (err) {
       setError("Tài khoản hoặc mật khẩu không chính xác!");
     }
   }
+
+  const loginWithGoogle = () => {
+    window.location.href = "http://localhost:8888/oauth2/authorization/google";
+  };
 
   return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -42,7 +39,7 @@ const Login = () => {
 
           <input
             className="w-full p-2 mb-3 border rounded"
-            placeholder="Username"
+            placeholder="Username or Email"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -67,7 +64,7 @@ const Login = () => {
           <p className="p-4 text-center">=============== Or ===============</p>
 
           <button
-            type="submit"
+            onClick={loginWithGoogle}
             className="flex items-center justify-center w-full gap-2 py-2 border-2 border-blue-500 rounded"
           >
             <FcGoogle size={24} />

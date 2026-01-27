@@ -6,10 +6,9 @@ export default function Header() {
   return (
     <header className="flex justify-between p-4 text-white bg-blue-600">
       <Link to="/"><h1 className="text-xl font-bold">SocialBlog</h1></Link>
-      <nav className="space-x-4">
+      <nav className="flex items-center gap-4">
         <Link to="/">Bảng tin</Link>
         <Link to="/friends">Bạn bè</Link>
-        <Link to="/profile">Profile</Link>
         {!user && (
           <>
           <Link to="/login">Login</Link>

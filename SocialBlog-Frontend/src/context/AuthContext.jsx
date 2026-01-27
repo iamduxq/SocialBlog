@@ -1,16 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";  
+import * as api from "../service/api";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    
     const fetchMe = async () => {
         try {
-            const res = await axios.get("http://localhost:8888/api/auth/me", {
-                withCredentials: true
-            });
+            const res = await api.getMe();
             setUser(res.data);
         } catch {
             setUser(null);
@@ -24,13 +23,13 @@ export const AuthProvider = ({ children}) => {
     },[]);
 
     // Đăng xuất handle
-    const logout = () => {
+    const logout = async () => {
+        await api.logout();
         setUser(null);
-        localStorage.removeItem("token");
     };
 
     return(
-        <AuthContext.Provider value={{user, setUser, logout, loading}}>
+        <AuthContext.Provider value={{user, setUser, loading, fetchMe, logout}}>
             {children}
         </AuthContext.Provider>
     );
