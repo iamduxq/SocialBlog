@@ -1,10 +1,13 @@
 package com.example.PersonalSocialBlog.security.config;
 
 import com.example.PersonalSocialBlog.security.jwt.JwtAuthenticationFilter;
+import com.example.PersonalSocialBlog.security.oauth2.CustomOAuth2UserService;
+import com.example.PersonalSocialBlog.security.oauth2.OAuth2SuccessHandle;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,17 +27,25 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2SuccessHandle successHandle;
 
     @Bean
     public SecurityFilterChain securityFilterChan(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/oauth2/**", "/api/auth/login", "/api/auth/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(user ->
+                                user.userService(oAuth2UserService)
+                        )
+                        .successHandler(successHandle)
+                );
         return http.build();
     }
 

@@ -3,6 +3,7 @@ package com.example.PersonalSocialBlog.service.impl;
 import com.example.PersonalSocialBlog.component.ServiceHelper;
 import com.example.PersonalSocialBlog.dto.UserDTO;
 import com.example.PersonalSocialBlog.dto.authDTO.RegisterRequest;
+import com.example.PersonalSocialBlog.entity.Enum.AuthProvider;
 import com.example.PersonalSocialBlog.entity.RoleEntity;
 import com.example.PersonalSocialBlog.entity.UserEntity;
 import com.example.PersonalSocialBlog.mapper.UserMapper;
@@ -47,13 +48,17 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new RuntimeException("Role USER không tồn tại"));
         UserEntity user = userMapper.registerRequest(request, role);
         user.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
+        user.setProvider(AuthProvider.LOCAL);
         UserEntity savedUser = service.userRepository.save(user);
         userMapper.toDTO(savedUser);
     }
 
     @Override
-    public UserDTO getCurrentUser(String username) {
-        UserEntity user = service.userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+    public UserDTO getCurrentUser(String printcipal) {
+//        UserEntity user = service.userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        UserEntity user = service.userRepository.findByEmail(printcipal)
+                .or(() -> service.userRepository.findByUsername(printcipal))
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         return userMapper.toDTO(user);
     }
 }

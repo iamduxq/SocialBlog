@@ -23,6 +23,15 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public Long getUserId(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("userId", Long.class);
+    }
+
     public String getUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)

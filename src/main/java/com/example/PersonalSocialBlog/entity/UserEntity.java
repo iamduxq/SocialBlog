@@ -1,5 +1,6 @@
 package com.example.PersonalSocialBlog.entity;
 
+import com.example.PersonalSocialBlog.entity.Enum.AuthProvider;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ public class UserEntity extends BaseEntity{
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = true)
     private String password;
 
     @Column(name = "email", nullable = false)
@@ -25,6 +26,10 @@ public class UserEntity extends BaseEntity{
 
     @Column(name = "avatar", nullable = false)
     private String avatar;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider provider;
 
     // Constrait to other entity in database
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
