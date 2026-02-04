@@ -45,6 +45,12 @@ public class SecurityConfig {
                                 user.userService(oAuth2UserService)
                         )
                         .successHandler(successHandle)
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("access_token", "JSESSIONID")
                 );
         return http.build();
     }
