@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function OAuth2Redirect() {
     const [params] = useSearchParams();
     const navigate = useNavigate();
-    const {fetchMe} = useAuth;
+    const {fetchMe} = useAuth();
     const handleRef = useRef(false);
 
     useEffect(() => {

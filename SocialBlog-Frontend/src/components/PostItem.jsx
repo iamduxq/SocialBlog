@@ -1,43 +1,59 @@
 import { useState } from "react";
 import { useNotification } from "../context/NotificationContext";
+import axiosClient from "../api/axiosClient";
+
+function formatTime(createdDate) {
+  if(!createdDate) return "Vừa xong";
+  const created = new Date(createdDate);
+  const now = new Date();
+  const diffMs = now - created;
+
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMinutes < 1) return "Vừa xong";
+  if (diffMinutes < 60) return `${diffMinutes} phút trước`;
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  if (diffDays < 7) return `${diffDays} ngày trước`;
+  const d = created.getDate().toString().padStart(2, "0");
+  const m = (created.getMonth() + 1).toString().padStart(2, "0");
+  const y = created.getFullYear();
+  return `${d}-${m}-${y}`;
+}
 
 
-export default function PostItem() {
-  const [likeCount, setLikeCount] = useState(12);
-  const [liked, setLiked] = useState(false);
+export default function PostItem({post}) {
   const { addNotification } = useNotification();
-
-
-  const [comments, setComments] = useState([
-    { id: 1, user: "Trần Văn B", content: "Bài viết hay quá!" },
-    { id: 2, user: "Lê Văn C", content: "Chuẩn luôn 👍" },
-  ]);
-
-  const [commentText, setCommentText] = useState("");
-
+  const [ likeCount, setLikeCount ] = useState(post.likeCount || 0);
+  const [ liked, setLiked ] = useState(false);
+  const [ comments, setComments ] = useState(post.comments || []);
+  const [ commentText, setCommentText ] = useState("");
+  
   const handleLike = () => {
     setLiked(!liked);
-    setLikeCount(liked ? likeCount - 1 : likeCount + 1);
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
     addNotification({
       id: Date.now(),
       type: "like",
-      postId: 101,
+      postId: post.id,
       message: "Ai đó đã thích bài viết của bạn",
     });
   };
 
   const handleComment = () => {
     if (!commentText.trim()) return;
-
-    setComments([
-      ...comments,
-      { id: Date.now(), user: "Bạn", content: commentText },
-    ]);
+    const newComment = {
+      id: Date.now(),
+      user: "Bạn",
+      content: commentText,
+    };
+    setComments([...comments, newComment]);
     setCommentText("");
     addNotification({
       id: Date.now(),
       type: "comment",
-      postId: 101,
+      postId: post.id,
       message: "Ai đó đã bình luận bài viết của bạn",
     });
   };
@@ -47,17 +63,22 @@ export default function PostItem() {
       
       {/* Header bài viết */}
       <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-gray-300 rounded-full" />
+        <img 
+          src={post.user?.avatar || "/default-avatar.png"}
+          alt="avatar"
+          className="object-cover w-10 h-10 rounded-full"
+        />
         <div>
-          <p className="font-semibold">Nguyễn Văn A</p>
-          <p className="text-xs text-gray-500">2 giờ trước</p>
+          <p className="font-semibold">{post.user?.fullName || "Người dùng"}</p>
+          <p className="text-xs text-gray-500">{formatTime(post.createdDate)}</p>
         </div>
       </div>
 
       {/* Nội dung */}
-      <p>
-        Đây là nội dung bài viết demo cho SocialBlog. Phần này map từ bảng post.
-      </p>
+      <p>{post.content}</p>
+      {post.imageUrl && (
+        <img src={`${axiosClient.defaults.baseURL}${post.imageUrl}`} alt="post" className="object-cover mt-2 rounded max-h-96" />
+      )}
 
       {/* Like & Comment count */}
       <div className="flex justify-between text-sm text-gray-600">

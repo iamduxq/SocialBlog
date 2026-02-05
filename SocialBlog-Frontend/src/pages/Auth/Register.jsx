@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import axios from "axios";
+import authApi from "../../api/authApi";
 import { useState } from "react";
 
 export default function Register() {
@@ -28,11 +28,11 @@ export default function Register() {
     setError("");
 
     try {
-      await axios.post("http://localhost:8888/api/auth/register", form);
+      await authApi.register(form);
       alert("Đăng ký thành công! Vui lòng đăng nhập.");
-      navigate("/login");
+      navigate("/login", {replace: true});
     } catch (err) {
-      setError(err.response?.data || "Đăng ký thất bại");
+      setError(err.response?.data?.message || err.response?.data || "Đăng ký thất bại");
     }
   };
 
@@ -95,7 +95,9 @@ export default function Register() {
         >
           Tạo tài khoản
         </button>
-
+        {error && (
+          <p className="mb-3 text-sm text-center text-red-500">{error}</p>
+        )}
         <p className="p-4 text-center">=============== Or ===============</p>
 
         <button

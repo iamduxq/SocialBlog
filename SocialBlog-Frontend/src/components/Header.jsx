@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
-  const {user, logout} = useAuth();
+  const {user, logout, loading} = useAuth();
+
+  if (loading) return null;
   return (
     <header className="flex justify-between p-4 text-white bg-blue-600">
       <Link to="/"><h1 className="text-xl font-bold">SocialBlog</h1></Link>

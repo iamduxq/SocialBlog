@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import * as api from "../service/api";
+import authApi from "../api/authApi";
 
 const AuthContext = createContext();
 
@@ -8,8 +8,9 @@ export const AuthProvider = ({ children}) => {
     const [loading, setLoading] = useState(true);
     
     const fetchMe = async () => {
+        setLoading(true);
         try {
-            const res = await api.getMe();
+            const res = await authApi.getMe();
             setUser(res.data);
         } catch {
             setUser(null);
@@ -24,8 +25,9 @@ export const AuthProvider = ({ children}) => {
 
     // Đăng xuất handle
     const logout = async () => {
-        await api.logout();
+        await authApi.logout();
         setUser(null);
+        await fetchMe();
     };
 
     return(
