@@ -11,6 +11,7 @@ import java.util.List;
 public class PostDTO extends AbstractDTO<PostDTO> {
     private String title;
     private String description;
+    private String content;
     private String slug;
     private int viewCount;
     private Visibility visibility;
@@ -18,4 +19,5 @@ public class PostDTO extends AbstractDTO<PostDTO> {
     private CategoryDTO category;
     private int commentCount;
     private List<TagDTO> tags;
+    private String imageUrl;
 }

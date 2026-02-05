@@ -28,6 +28,9 @@ public class PostsEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Visibility visibility;
 
+    @Column(name = "imageUrl", nullable = true)
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_user"))
     private UserEntity user;
