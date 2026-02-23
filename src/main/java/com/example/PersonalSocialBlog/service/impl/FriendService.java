@@ -23,10 +23,16 @@ public class FriendService implements IFriendService {
     private final ServiceHelper serviceHelper;
     private final UserMapper userMapper;
 
+    private UserEntity findByUsernameOrEmail(String value) {
+        return serviceHelper.userRepository.findByUsername(value)
+                .or(() -> serviceHelper.userRepository.findByEmail(value))
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+    }
+
     @Override
     public void sendFriendRequest(String senderUsername, Long receiverId) {
-        UserEntity sender = serviceHelper.userRepository.findByUsername(senderUsername)
-                .orElseThrow(() -> new RuntimeException("Không tim thấy người gửi"));
+        UserEntity sender = findByUsernameOrEmail(senderUsername);
+//                .orElseThrow(() -> new RuntimeException("Không tim thấy người gửi"));
         UserEntity receiver = serviceHelper.userRepository.findById(receiverId)
                 .orElseThrow(() -> new RuntimeException("Không tim thấy người nhận"));
 
@@ -54,7 +60,7 @@ public class FriendService implements IFriendService {
 
     @Override
     public void handleFriendRequest(Long requestId, String username, FriendRequestAction action) {
-        UserEntity currentUser = serviceHelper.userRepository.findByUsername(username).orElseThrow();
+        UserEntity currentUser = findByUsernameOrEmail(username);
         FriendEntity request = serviceHelper.friendRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy lời mời"));
         switch (action) {
@@ -85,7 +91,7 @@ public class FriendService implements IFriendService {
 
     @Override
     public void unfriend(Long userId, String username) {
-        UserEntity currentUser = serviceHelper.userRepository.findByUsername(username).orElseThrow();
+        UserEntity currentUser = findByUsernameOrEmail(username);
         UserEntity targetUser = serviceHelper.userRepository.findById(userId).orElseThrow();
         Optional<FriendEntity> friendship = serviceHelper.friendRepository.findBySenderAndReceiver(currentUser, targetUser);
         if (friendship.isEmpty()) {
@@ -96,19 +102,13 @@ public class FriendService implements IFriendService {
 
     @Override
     public List<UserDTO> getFriends(String username) {
-        UserEntity user = serviceHelper.userRepository.findByUsername(username).orElseThrow();
+        UserEntity user = findByUsernameOrEmail(username);
         List<FriendEntity> sent = serviceHelper.friendRepository.findBySenderAndStatus(user, FriendStatus.ACCEPTED);
         List<FriendEntity> receiver = serviceHelper.friendRepository.findByReceiverAndStatus(user, FriendStatus.ACCEPTED);
         List<UserDTO> friends = new ArrayList<>(); // Loi tu day
         sent.forEach(f -> friends.add(userMapper.toDTO(f.getReceiver())));
         receiver.forEach(f -> friends.add(userMapper.toDTO(f.getSender())));
         return friends;
-    }
-
-    @Override
-    public List<FriendEntity> getPendingRequests(String username) {
-        UserEntity user = serviceHelper.userRepository.findByUsername(username).orElseThrow();
-        return serviceHelper.friendRepository.findByReceiverAndStatus(user, FriendStatus.PENDING);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class FriendService implements IFriendService {
 
     @Override
     public FriendRelationStatus getRelationStatus(String username, Long targetUserId) {
-        UserEntity currentUser = serviceHelper.userRepository.findByUsername(username).orElseThrow();
+        UserEntity currentUser = findByUsernameOrEmail(username);
         UserEntity targetUser = serviceHelper.userRepository.findById(targetUserId).orElseThrow();
 
         if (currentUser.getId().equals(targetUser.getId())) {
@@ -147,5 +147,44 @@ public class FriendService implements IFriendService {
             return FriendRelationStatus.REQUEST_RECEIVED;
         }
         return FriendRelationStatus.NONE;
+    }
+
+    @Override
+    public List<UserDTO> getPendingRequests(String username) {
+        UserEntity currentUser = findByUsernameOrEmail(username);
+        return serviceHelper.friendRepository
+                .findByReceiverAndStatus(currentUser, FriendStatus.PENDING)
+                .stream()
+                .map(f -> {
+                    UserEntity sender = f.getSender();
+                    UserDTO dto = new UserDTO();
+                    dto.setId(sender.getId());
+                    dto.setUsername(sender.getUsername());
+                    dto.setFullName(sender.getFullName());
+                    dto.setAvatar(sender.getAvatar());
+                    dto.setFriendRequestId(f.getId());
+                    return dto;
+                })
+                .toList();
+    }
+
+    @Override
+    public List<UserDTO> getSentRequests(String username) {
+        UserEntity user = findByUsernameOrEmail(username);
+        return serviceHelper.friendRepository.findBySenderAndStatus(user, FriendStatus.PENDING)
+                .stream()
+                .map(f -> {
+                    UserDTO dto = userMapper.toDTO(f.getReceiver());
+                    dto.setFriendRequestId(f.getId());
+                    return dto;
+                }).toList();
+    }
+
+    @Override
+    public long countFriends(String username) {
+        UserEntity user = findByUsernameOrEmail(username);
+        long sent = serviceHelper.friendRepository.countBySenderAndStatus(user, FriendStatus.ACCEPTED);
+        long received = serviceHelper.friendRepository.countByReceiverAndStatus(user, FriendStatus.ACCEPTED);
+        return sent + received;
     }
 }

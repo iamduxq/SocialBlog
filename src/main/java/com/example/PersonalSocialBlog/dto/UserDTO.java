@@ -12,4 +12,5 @@ public class UserDTO extends AbstractDTO<UserDTO> {
     private String fullName;
     private String avatar;
     private RoleDTO role;
+    private Long friendRequestId;
 }
