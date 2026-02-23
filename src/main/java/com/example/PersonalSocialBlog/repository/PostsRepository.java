@@ -13,4 +13,6 @@ public interface PostsRepository extends JpaRepository<PostsEntity, Long> {
     List<PostsEntity> findAllByVisibilityOrderByCreatedDateDesc(Visibility visibility);
     boolean existsBySlug(String slug);
     Optional<PostsEntity> findBySlug(String slug);
+    List<PostsEntity> findAllByOrderByCreatedDateDesc();
+
 }

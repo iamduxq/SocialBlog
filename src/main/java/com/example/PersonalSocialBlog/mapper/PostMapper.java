@@ -3,6 +3,7 @@ package com.example.PersonalSocialBlog.mapper;
 import com.example.PersonalSocialBlog.dto.PostDTO;
 import com.example.PersonalSocialBlog.dto.PostDetailDTO;
 import com.example.PersonalSocialBlog.dto.request.PostCreateRequest;
+import com.example.PersonalSocialBlog.entity.PostImage;
 import com.example.PersonalSocialBlog.entity.PostsEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,6 @@ public class PostMapper {
         dto.setContent(entity.getContent());
         dto.setViewCount(entity.getViewCount());
         dto.setVisibility(entity.getVisibility());
-        dto.setImageUrl(entity.getImageUrl());
         dto.setCreatedDate(entity.getCreatedDate());
         dto.setUser(userMapper.toDTO(entity.getUser()));
         dto.setCategory(categoryMapper.toDTO(entity.getCategory()));
@@ -38,6 +38,14 @@ public class PostMapper {
         dto.setCommentCount(
                 entity.getComments() == null ? 0 : entity.getComments().size()
         );
+        if (entity.getImages() != null) {
+            dto.setImageUrls(
+                    entity.getImages()
+                            .stream()
+                            .map(PostImage::getImageUrl)
+                            .collect(Collectors.toList())
+            );
+        }
         dto.setTags(
                 entity.getTags() == null ? null :
                         entity.getTags()
@@ -92,7 +100,6 @@ public class PostMapper {
         entity.setDescription(dto.getDescription());
         entity.setSlug(dto.getSlug());
         entity.setContent(dto.getContent());
-        entity.setImageUrl(dto.getImageUrl());
         entity.setVisibility(dto.getVisibility());
         entity.setViewCount(dto.getViewCount());
 //        entity.setUser(userMapper.ToEntity(dto.getUser()));

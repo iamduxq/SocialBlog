@@ -19,5 +19,5 @@ public class PostDTO extends AbstractDTO<PostDTO> {
     private CategoryDTO category;
     private int commentCount;
     private List<TagDTO> tags;
-    private String imageUrl;
+    private List<String> imageUrls;
 }

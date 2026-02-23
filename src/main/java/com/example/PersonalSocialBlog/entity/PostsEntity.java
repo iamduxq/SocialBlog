@@ -42,6 +42,9 @@ public class PostsEntity extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<CommentEntity> comments;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostImage> images;
+
     @ManyToMany
     @JoinTable(
             name = "post_tags",

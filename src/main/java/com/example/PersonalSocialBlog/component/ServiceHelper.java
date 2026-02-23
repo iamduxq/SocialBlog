@@ -12,8 +12,9 @@ public class ServiceHelper {
     public final PostsRepository postsRepository;
     public final RoleRepository roleRepository;
     public final UserRepository userRepository;
+    public final PostImageRepository postImageRepository;
 
-    public ServiceHelper(CategoryRepository categoryRepository, CommentRepository commentRepository, FriendRepository friendRepository, MessageRepository messageRepository, PostsRepository postsRepository, RoleRepository roleRepository, UserRepository userRepository) {
+    public ServiceHelper(CategoryRepository categoryRepository, CommentRepository commentRepository, FriendRepository friendRepository, MessageRepository messageRepository, PostsRepository postsRepository, RoleRepository roleRepository, UserRepository userRepository, PostImageRepository postImageRepository) {
         this.categoryRepository = categoryRepository;
         this.commentRepository = commentRepository;
         this.friendRepository = friendRepository;
@@ -21,5 +22,6 @@ public class ServiceHelper {
         this.postsRepository = postsRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
+        this.postImageRepository = postImageRepository;
     }
 }
