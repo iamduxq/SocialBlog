@@ -1,16 +1,18 @@
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
 
 export default function MainLayout({ children }) {
   return (
     <>
+    <div className="flex flex-col h-screen bg-gray-100">
       <Header />
-      <div className="flex min-h-screen bg-gray-100">
-        <Sidebar />
-        <main className="flex-1 p-6">{children}</main>
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar/>
+        <main className="flex-1 p-6 overflow-y-auto">
+          {children}
+        </main>
       </div>
-      <Footer />
+    </div>
     </>
   );
 }

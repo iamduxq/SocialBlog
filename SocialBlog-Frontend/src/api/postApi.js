@@ -19,6 +19,15 @@ const postApi = {
         });
     },
 
+    // Delete Post
+    deletePost(id) {
+        return axiosClient.delete(`${BASE_URL}/${id}`);
+    },
+
+    // Update visibility
+    updateVisibility(postId, data) {
+        return axiosClient.patch(`${BASE_URL}/${postId}/visibility`, data);
+    }
 }
 
 export default postApi;
